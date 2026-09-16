@@ -49,24 +49,32 @@ const Videos = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="admin-videos-page">
       <Toaster position="top-right" />
       
       {isFormOpen && <VideoForm video={editingVideo} onClose={handleCloseForm} />}
 
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="videos-page-heading">
         <div>
-          <h1 className="text-2xl font-bold text-primary">Video / Class Management</h1>
-          <p className="text-secondary text-sm">Add and manage YouTube class recordings.</p>
+          <p className="dashboard-kicker">CONTENT LIBRARY</p>
+          <h1>Video &amp; class management</h1>
+          <p>Organize lessons, publish recordings, and keep the learning library up to date.</p>
         </div>
-        <button onClick={() => { setEditingVideo(null); setIsFormOpen(true); }} className="btn-primary">
+        <div className="videos-heading-actions">
+          <div className="videos-summary"><strong>{videos.length}</strong><span>total classes</span></div>
+          <button onClick={() => { setEditingVideo(null); setIsFormOpen(true); }} className="btn-primary videos-add-button">
           <Plus size={18} /> Add New Video
-        </button>
+          </button>
+        </div>
       </div>
 
-      <div className="card overflow-hidden">
+      <div className="videos-table-panel">
+        <div className="videos-table-heading">
+          <div><h2>Published library</h2><p>Review class details, availability, and performance at a glance.</p></div>
+          <span>{loading ? 'Updating...' : `${videos.length} classes`}</span>
+        </div>
         <div className="overflow-x-auto">
-          <table className="data-table">
+          <table className="data-table videos-table">
             <thead>
               <tr>
                 <th>Class</th>
@@ -90,16 +98,16 @@ const Videos = () => {
                 videos.map((video) => (
                   <tr key={video._id}>
                     <td>
-                      <span className="px-3 py-1 bg-blue-500/10 text-blue-500 font-bold rounded-lg text-sm border border-blue-500/20">
+                      <span className="video-class-badge">
                         C{String(video.classNumber).padStart(2, '0')}
                       </span>
                     </td>
                     <td>
-                      <div className="flex items-center gap-3">
-                        <img src={video.thumbnail} alt="" className="w-16 h-10 object-cover rounded shadow-sm border border-theme" />
-                        <div>
-                          <div className="font-semibold text-primary text-sm line-clamp-1">{video.title}</div>
-                          <div className="text-xs text-muted flex items-center gap-1">
+                      <div className="video-info-cell">
+                        <img src={video.thumbnail} alt="" className="video-thumbnail" />
+                        <div className="video-info-copy">
+                          <div className="video-title">{video.title}</div>
+                          <div className="video-instructor">
                             {video.instructor} <a href={video.youtubeUrl} target="_blank" rel="noreferrer" className="text-blue-500 hover:underline"><ExternalLink size={10} /></a>
                           </div>
                         </div>
@@ -113,16 +121,16 @@ const Videos = () => {
                       <span className={`badge-${video.status}`}>{video.status.toUpperCase()}</span>
                     </td>
                     <td className="text-sm">
-                      <div className="flex items-center gap-1.5 text-secondary">
+                      <div className="video-views">
                         <Eye size={14} className="text-muted" /> {video.views}
                       </div>
                     </td>
                     <td>
-                      <div className="flex items-center justify-end gap-2">
-                        <button onClick={() => handleEdit(video)} className="p-1.5 text-blue-500 hover:bg-blue-500/10 rounded-lg transition-colors" title="Edit">
+                      <div className="videos-row-actions">
+                        <button onClick={() => handleEdit(video)} className="videos-action videos-action-edit" title="Edit class">
                           <Edit size={18} />
                         </button>
-                        <button onClick={() => handleDelete(video._id, video.title)} className="p-1.5 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors" title="Delete">
+                        <button onClick={() => handleDelete(video._id, video.title)} className="videos-action videos-action-delete" title="Delete class">
                           <Trash2 size={18} />
                         </button>
                       </div>

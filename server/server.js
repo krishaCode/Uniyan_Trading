@@ -4,9 +4,6 @@ const cors = require('cors');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
 
-// Connect to database
-connectDB();
-
 const app = express();
 
 // Middleware
@@ -62,6 +59,12 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🚀 TradNex Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
-});
+
+const startServer = async () => {
+  await connectDB();
+  app.listen(PORT, () => {
+    console.log(`🚀 TradNex Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
+  });
+};
+
+startServer();

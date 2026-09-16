@@ -49,7 +49,7 @@ const Messages = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="admin-messages-page">
       <Toaster position="top-right" />
       
       {selectedMsg && (
@@ -69,43 +69,52 @@ const Messages = () => {
         </Modal>
       )}
 
-      <div>
-        <h1 className="text-2xl font-bold text-primary">Contact Messages</h1>
-        <p className="text-secondary text-sm">Inbox for contact form submissions.</p>
+      <div className="messages-page-heading">
+        <div>
+          <p className="dashboard-kicker">SUPPORT INBOX</p>
+          <h1>Contact messages</h1>
+          <p>Review questions and requests submitted by learners through the contact form.</p>
+        </div>
+        <div className="messages-summary-group">
+          <div className="messages-summary"><strong>{messages.length}</strong><span>total</span></div>
+          <div className="messages-summary unread"><strong>{messages.filter(message => !message.read).length}</strong><span>unread</span></div>
+        </div>
       </div>
 
-      <div className="card overflow-hidden">
+      <div className="messages-inbox-panel">
+        <div className="messages-inbox-heading">
+          <div><h2>Inbox</h2><p>Select a message to view the full request.</p></div>
+          <span>{loading ? 'Updating...' : `${messages.length} conversations`}</span>
+        </div>
         {loading ? (
-          <div className="p-12"><LoadingSpinner /></div>
+          <div className="messages-empty"><LoadingSpinner /></div>
         ) : messages.length === 0 ? (
-          <div className="p-12 text-center text-secondary">
+          <div className="messages-empty">
             <Mail className="mx-auto mb-4 opacity-50" size={48} />
             <p>No messages in inbox.</p>
           </div>
         ) : (
-          <div className="divide-y divide-theme">
+          <div className="messages-list">
             {messages.map(msg => (
               <div 
                 key={msg._id} 
                 onClick={() => handleRead(msg)}
-                className={`p-4 flex items-center justify-between gap-4 cursor-pointer hover:bg-glass transition-colors ${!msg.read ? 'bg-blue-500/5' : ''}`}
+                className={`message-row ${!msg.read ? 'unread' : ''}`}
               >
-                <div className="flex items-center gap-4 min-w-0">
-                  <div className={`shrink-0 ${!msg.read ? 'text-blue-500' : 'text-muted'}`}>
+                <div className="message-icon">
                     <Mail size={20} />
-                  </div>
-                  <div className="min-w-0">
-                    <p className={`text-sm truncate ${!msg.read ? 'font-bold text-primary' : 'font-medium text-secondary'}`}>
-                      {msg.name} <span className="text-muted font-normal text-xs ml-2">{new Date(msg.createdAt).toLocaleDateString()}</span>
-                    </p>
-                    <p className={`truncate text-sm ${!msg.read ? 'text-primary font-semibold' : 'text-primary'}`}>{msg.subject}</p>
-                    <p className="truncate text-sm text-muted hidden md:block">{msg.message}</p>
-                  </div>
                 </div>
-                
-                <div className="flex items-center gap-2 shrink-0">
-                  {msg.read && <span className="p-1.5 text-emerald-500" title="Read"><CheckCircle2 size={16} /></span>}
-                  <button onClick={(e) => handleDelete(msg._id, e)} className="p-1.5 text-red-500 hover:bg-red-500/10 rounded transition-colors" title="Delete">
+                <div className="message-copy">
+                    <div className="message-sender"><strong>{msg.name}</strong><span>{msg.email}</span></div>
+                    <p className="message-subject">{msg.subject}</p>
+                    <p className="message-preview">{msg.message}</p>
+                </div>
+                <div className="message-meta">
+                  <time>{new Date(msg.createdAt).toLocaleDateString()}</time>
+                  {msg.read && <span className="message-read"><CheckCircle2 size={14} /> Read</span>}
+                </div>
+                <div className="message-actions">
+                  <button onClick={(e) => handleDelete(msg._id, e)} className="message-delete" title="Delete message">
                     <Trash2 size={16} />
                   </button>
                 </div>

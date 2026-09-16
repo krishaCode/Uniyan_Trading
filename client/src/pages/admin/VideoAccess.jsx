@@ -106,51 +106,53 @@ const VideoAccess = () => {
   };
 
   return (
-    <div className="space-y-6 h-[calc(100vh-8rem)] flex flex-col">
+    <div className="admin-access-page">
       <Toaster position="top-right" />
       
-      <div>
-        <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
-          <ShieldCheck className="text-blue-500" /> Video Access Control
-        </h1>
-        <p className="text-secondary text-sm">Select an approved user on the left to manage their video access.</p>
+      <div className="access-page-heading">
+        <div>
+          <p className="dashboard-kicker">PERMISSIONS CENTER</p>
+          <h1><ShieldCheck className="text-blue-500" /> Video access control</h1>
+          <p>Choose an approved learner, then control which classes are available to their account.</p>
+        </div>
+        <div className="access-summary"><strong>{users.length}</strong><span>approved learners</span></div>
       </div>
 
-      <div className="flex-1 grid lg:grid-cols-3 gap-6 overflow-hidden min-h-[400px]">
+      <div className="access-workspace">
         {/* Users List (Left Pane) */}
-        <div className="card flex flex-col overflow-hidden">
-          <div className="p-4 border-b border-theme">
-            <div className="relative">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
-              <input 
-                type="text" 
-                placeholder="Search approved users..." 
-                className="input-field pl-9 text-sm py-2"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
+        <div className="access-users-panel">
+          <div className="access-panel-heading">
+            <div><p>STEP 01</p><h2>Choose a learner</h2></div>
+            <span>{users.length} users</span>
           </div>
-          
-          <div className="flex-1 overflow-y-auto p-2">
+          <div className="access-search">
+            <Search size={16} />
+            <input
+              type="text"
+              placeholder="Search approved users..."
+              className="input-field"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className="access-user-list">
             {loadingUsers ? (
-              <div className="p-4 flex justify-center"><LoadingSpinner /></div>
+              <div className="access-empty"><LoadingSpinner /></div>
             ) : users.length === 0 ? (
-              <div className="p-4 text-center text-secondary text-sm">No users found.</div>
+              <div className="access-empty">No approved users found.</div>
             ) : (
               users.map(u => (
                 <button 
                   key={u._id}
                   onClick={() => setSelectedUserId(u._id)}
-                  className={`w-full text-left p-3 rounded-xl mb-2 flex items-center gap-3 transition-colors ${selectedUserId === u._id ? 'bg-blue-500 text-white' : 'hover:bg-glass text-primary'}`}
+                  className={`access-user-row ${selectedUserId === u._id ? 'active' : ''}`}
                 >
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${selectedUserId === u._id ? 'bg-white/20' : 'bg-blue-500/10 text-blue-500'}`}>
-                    {u.name.charAt(0)}
+                  <div className="access-user-avatar">{u.name.charAt(0)}</div>
+                  <div className="access-user-copy">
+                    <p>{u.name}</p>
+                    <span>{u.email}</span>
                   </div>
-                  <div className="overflow-hidden">
-                    <p className={`font-semibold text-sm truncate ${selectedUserId === u._id ? 'text-white' : ''}`}>{u.name}</p>
-                    <p className={`text-xs truncate ${selectedUserId === u._id ? 'text-blue-100' : 'text-muted'}`}>{u.email}</p>
-                  </div>
+                  <span className="access-user-status">Approved</span>
                 </button>
               ))
             )}
@@ -158,19 +160,20 @@ const VideoAccess = () => {
         </div>
 
         {/* Video Access Grid (Right Pane) */}
-        <div className="lg:col-span-2 card flex flex-col overflow-hidden">
+        <div className="access-permissions-panel">
           {selectedUserId ? (
             <>
-              <div className="p-4 border-b border-theme flex justify-between items-center bg-primary/30">
-                <h3 className="font-bold text-primary">Manage Permissions</h3>
-                <button onClick={handleGrantAll} className="btn-secondary !text-xs !py-1.5">Grant All Access</button>
+              <div className="access-panel-heading access-permissions-heading">
+                <div><p>STEP 02</p><h2>Manage class permissions</h2><span>{userAccess.size} of {videos.length} classes enabled</span></div>
+                <button onClick={handleGrantAll} className="btn-secondary access-grant-button">Grant all access</button>
               </div>
+              <div className="access-progress"><span style={{ width: videos.length ? `${(userAccess.size / videos.length) * 100}%` : '0%' }} /></div>
 
-              <div className="flex-1 p-4 overflow-y-auto relative">
+              <div className="access-video-list">
                 {loadingAccess ? (
                   <LoadingSpinner fullScreen={false} />
                 ) : (
-                  <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="access-video-grid">
                     {loadingVideos ? (
                       <LoadingSpinner />
                     ) : videos.map(video => {
@@ -179,20 +182,18 @@ const VideoAccess = () => {
                         <div 
                           key={video._id} 
                           onClick={() => toggleAccess(video._id)}
-                          className={`flex items-center gap-4 p-3 rounded-xl border cursor-pointer transition-all hover:scale-[1.02] ${hasAccess ? 'bg-blue-500/10 border-blue-500/30' : 'bg-glass border-theme hover:border-blue-500/30'}`}
+                          className={`access-video-card ${hasAccess ? 'active' : ''}`}
                         >
-                          <div className={`shrink-0 ${hasAccess ? 'text-blue-500' : 'text-muted'}`}>
+                          <div className="access-video-check">
                             {hasAccess ? <CheckSquare size={20} /> : <Square size={20} />}
                           </div>
-                          
-                          <div className="w-16 h-10 rounded overflow-hidden relative shrink-0">
-                            <img src={video.thumbnail} alt="" className="w-full h-full object-cover" />
-                            {!hasAccess && <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]"></div>}
+                          <div className="access-video-thumbnail">
+                            <img src={video.thumbnail} alt="" />
+                            {!hasAccess && <div />}
                           </div>
-                          
-                          <div className="overflow-hidden">
-                            <h4 className={`text-sm font-semibold truncate ${hasAccess ? 'text-primary' : 'text-secondary'}`}>{video.title}</h4>
-                            <p className="text-xs text-muted">Class {video.classNumber}</p>
+                          <div className="access-video-copy">
+                            <h3>{video.title}</h3>
+                            <p>Class {video.classNumber}</p>
                           </div>
                         </div>
                       );
@@ -202,10 +203,11 @@ const VideoAccess = () => {
               </div>
             </>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
-              <ShieldCheck size={64} className="text-muted opacity-30 mb-4" />
-              <h3 className="text-xl font-bold text-secondary mb-2">No User Selected</h3>
-              <p className="text-muted max-w-sm">Select a user from the list to view and manage their video access permissions.</p>
+            <div className="access-empty-state">
+              <ShieldCheck size={56} />
+              <p className="dashboard-panel-kicker">STEP 02</p>
+              <h2>Select a learner</h2>
+              <p>Choose an approved user from the directory to view and manage their class permissions.</p>
             </div>
           )}
         </div>

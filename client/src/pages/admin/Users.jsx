@@ -47,43 +47,53 @@ const Users = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="admin-users-page">
       <Toaster position="top-right" />
       
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="users-page-heading">
         <div>
-          <h1 className="text-2xl font-bold text-primary">User Management</h1>
-          <p className="text-secondary text-sm">Review, approve, and manage student accounts.</p>
+          <p className="dashboard-kicker">ACCOUNT DIRECTORY</p>
+          <h1>User management</h1>
+          <p>Review, approve, and manage student accounts from one organized workspace.</p>
         </div>
+        <div className="users-summary"><strong>{users.length}</strong><span>visible accounts</span></div>
       </div>
 
-      <div className="card p-4 flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+      <div className="users-filter-panel">
+        <div className="users-search">
+          <Search size={18} />
           <input 
             type="text" 
             placeholder="Search by name, email, or NIC..." 
-            className="input-field pl-10"
+            className="input-field"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <select 
-          className="input-field md:w-48"
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
-          <option value="">All Statuses</option>
-          <option value="pending">Pending</option>
-          <option value="approved">Approved</option>
-          <option value="rejected">Rejected</option>
-          <option value="suspended">Suspended</option>
-        </select>
+        <div className="users-filter-select">
+          <label htmlFor="user-status-filter">Status</label>
+          <select
+            id="user-status-filter"
+            className="input-field"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="suspended">Suspended</option>
+          </select>
+        </div>
       </div>
 
-      <div className="card overflow-hidden">
+      <div className="users-table-panel">
+        <div className="users-table-heading">
+          <div><h2>Student accounts</h2><p>Use row actions to review profiles and update access status.</p></div>
+          <span>{loading ? 'Updating...' : `${users.length} results`}</span>
+        </div>
         <div className="overflow-x-auto">
-          <table className="data-table">
+          <table className="data-table users-table">
             <thead>
               <tr>
                 <th>Name</th>
@@ -119,30 +129,30 @@ const Users = () => {
                       {new Date(user.createdAt).toLocaleDateString()}
                     </td>
                     <td>
-                      <div className="flex items-center justify-end gap-2">
-                        <Link to={`/admin/users/${user._id}`} className="p-1.5 text-blue-500 hover:bg-blue-500/10 rounded-lg transition-colors" title="View Details">
+                      <div className="users-row-actions">
+                        <Link to={`/admin/users/${user._id}`} className="users-action users-action-view" title="View Details">
                           <Eye size={18} />
                         </Link>
                         
                         {user.status !== 'approved' && (
-                          <button onClick={() => handleAction('approve', user._id, user.name)} className="p-1.5 text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors" title="Approve">
+                          <button onClick={() => handleAction('approve', user._id, user.name)} className="users-action users-action-approve" title="Approve">
                             <Check size={18} />
                           </button>
                         )}
                         
                         {user.status === 'pending' && (
-                          <button onClick={() => handleAction('reject', user._id, user.name)} className="p-1.5 text-rose-500 hover:bg-rose-500/10 rounded-lg transition-colors" title="Reject">
+                          <button onClick={() => handleAction('reject', user._id, user.name)} className="users-action users-action-reject" title="Reject">
                             <X size={18} />
                           </button>
                         )}
                         
                         {user.status === 'approved' && (
-                          <button onClick={() => handleAction('suspend', user._id, user.name)} className="p-1.5 text-amber-500 hover:bg-amber-500/10 rounded-lg transition-colors" title="Suspend">
+                          <button onClick={() => handleAction('suspend', user._id, user.name)} className="users-action users-action-suspend" title="Suspend">
                             <ShieldAlert size={18} />
                           </button>
                         )}
                         
-                        <button onClick={() => handleAction('delete', user._id, user.name)} className="p-1.5 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors" title="Delete">
+                        <button onClick={() => handleAction('delete', user._id, user.name)} className="users-action users-action-delete" title="Delete">
                           <Trash2 size={18} />
                         </button>
                       </div>

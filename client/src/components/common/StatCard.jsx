@@ -12,12 +12,12 @@ const StatCard = ({ title, value, icon: Icon, color = 'blue', trend, trendUp }) 
   return (
     <motion.div 
       whileHover={{ y: -5 }}
-      className={`card p-6 border-l-4 relative overflow-hidden`}
+      className={`dashboard-stat card border-l-4 relative overflow-hidden`}
       style={{ borderLeftColor: `var(--color-${color === 'green' ? 'emerald' : color === 'yellow' ? 'amber' : color === 'red' ? 'rose' : color}-500)` }}
     >
       <div className={`absolute top-0 right-0 w-32 h-32 rounded-bl-full bg-gradient-to-br ${colors[color]} opacity-20 -mr-8 -mt-8`}></div>
       
-      <div className="flex items-start justify-between relative z-10">
+      <div className="dashboard-stat-content flex items-start justify-between relative z-10">
         <div>
           <p className="text-sm font-medium text-secondary mb-1">{title}</p>
           <h4 className="text-3xl font-bold text-primary">{value}</h4>

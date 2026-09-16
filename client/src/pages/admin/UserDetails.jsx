@@ -68,115 +68,92 @@ const UserDetails = () => {
   if (!user) return <div className="text-center p-8">User not found</div>;
 
   return (
-    <div className="space-y-6">
+    <div className="admin-user-details-page">
       <Toaster position="top-right" />
       
-      <div className="flex items-center gap-4">
-        <Link to="/admin/users" className="p-2 bg-glass rounded-lg text-secondary hover:text-primary transition-colors">
+      <div className="user-details-heading">
+        <Link to="/admin/users" className="user-details-back">
           <ArrowLeft size={20} />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-primary">User Details</h1>
-          <p className="text-secondary text-sm">Manage user profile and video permissions.</p>
+          <p className="dashboard-kicker">ACCOUNT REVIEW</p>
+          <h1>User details</h1>
+          <p>Review this learner profile and manage their class permissions.</p>
         </div>
+        <span className={`badge-${user.status}`}>{user.status.toUpperCase()}</span>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="user-details-layout">
         {/* Profile Card */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className="card p-6">
-            <div className="w-20 h-20 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center font-black text-3xl mx-auto mb-4 border-2 border-blue-500/20">
+        <div className="user-profile-panel">
+          <div className="user-profile-card">
+            <div className="user-profile-avatar">
               {user.name.charAt(0)}
             </div>
-            <h2 className="text-xl font-bold text-center text-primary mb-1">{user.name}</h2>
-            <p className="text-center text-secondary text-sm mb-4">{user.email}</p>
-            
-            <div className="flex justify-center mb-6">
-              <span className={`badge-${user.status}`}>{user.status.toUpperCase()}</span>
+            <h2>{user.name}</h2>
+            <p className="user-profile-email"><Mail size={14} /> {user.email}</p>
+
+            <div className="user-facts">
+              <div><FileText size={16} /><span>NIC</span><strong>{user.nic}</strong></div>
+              <div><Phone size={16} /><span>Phone</span><strong>{user.phone}</strong></div>
+              <div><Calendar size={16} /><span>Joined</span><strong>{new Date(user.createdAt).toLocaleDateString()}</strong></div>
             </div>
 
-            <div className="space-y-3 pt-6 border-t border-theme">
-              <div className="flex items-center gap-3 text-sm">
-                <FileText size={16} className="text-muted" />
-                <span className="text-secondary w-16">NIC:</span>
-                <span className="font-mono text-primary font-medium">{user.nic}</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <Phone size={16} className="text-muted" />
-                <span className="text-secondary w-16">Phone:</span>
-                <span className="text-primary font-medium">{user.phone}</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <Calendar size={16} className="text-muted" />
-                <span className="text-secondary w-16">Joined:</span>
-                <span className="text-primary font-medium">{new Date(user.createdAt).toLocaleDateString()}</span>
-              </div>
-            </div>
-
-            <div className="mt-8 grid grid-cols-2 gap-3">
+            <div className="user-status-actions">
+              <p>ACCOUNT ACTIONS</p>
+              <div>
               {user.status !== 'approved' && (
-                <button onClick={() => handleStatusChange('approve')} className="btn-success w-full justify-center">
-                  <CheckCircle2 size={16} /> Approve
-                </button>
+                <button onClick={() => handleStatusChange('approve')} className="btn-success"><CheckCircle2 size={16} /> Approve</button>
               )}
               {user.status === 'pending' && (
-                <button onClick={() => handleStatusChange('reject')} className="btn-danger w-full justify-center">
-                  <XCircle size={16} /> Reject
-                </button>
+                <button onClick={() => handleStatusChange('reject')} className="btn-danger"><XCircle size={16} /> Reject</button>
               )}
               {user.status === 'approved' && (
-                <button onClick={() => handleStatusChange('suspend')} className="flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/30 hover:bg-amber-500/20 text-sm font-semibold w-full">
-                  <ShieldAlert size={16} /> Suspend
-                </button>
+                <button onClick={() => handleStatusChange('suspend')} className="user-suspend-button"><ShieldAlert size={16} /> Suspend</button>
               )}
+              </div>
             </div>
           </div>
         </div>
 
         {/* Video Access Management */}
-        <div className="lg:col-span-2">
-          <div className="card p-6 h-full flex flex-col">
-            <div className="flex justify-between items-center mb-6 pb-4 border-b border-theme">
+        <div className="user-permissions-panel">
+          <div className="permissions-heading">
               <div>
-                <h3 className="text-lg font-bold text-primary flex items-center gap-2">
+                <p className="dashboard-panel-kicker">ACCESS MANAGEMENT</p>
+                <h2>
                   <Video className="text-blue-500" size={20} /> Video Access Permissions
-                </h3>
-                <p className="text-sm text-secondary">Toggle switches to grant or revoke video access for this user.</p>
+                </h2>
+                <p>Toggle a class to grant or revoke access for this learner.</p>
               </div>
-              <div className="px-3 py-1 bg-blue-500/10 text-blue-500 rounded-lg text-sm font-bold border border-blue-500/20">
+              <div className="permissions-count">
                 {videos.filter(v => v.hasAccess).length} / {videos.length} Granted
               </div>
-            </div>
+          </div>
+          <div className="permissions-progress"><span style={{ width: videos.length ? `${(videos.filter(v => v.hasAccess).length / videos.length) * 100}%` : '0%' }} /></div>
 
-            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-3">
+            <div className="permissions-list">
               {videos.length === 0 ? (
-                <p className="text-center text-muted py-8">No videos available in the system.</p>
+                  <p className="permissions-empty">No videos available in the system.</p>
               ) : (
                 videos.map((video) => (
-                  <div key={video._id} className={`flex items-center justify-between p-4 rounded-xl border transition-colors ${video.hasAccess ? 'bg-blue-500/5 border-blue-500/20' : 'bg-glass border-theme hover:bg-white/5'}`}>
-                    <div className="flex items-center gap-4">
-                      <div className="relative w-16 h-12 rounded overflow-hidden">
-                        <img src={video.thumbnail} alt="" className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-black/20"></div>
+                  <div key={video._id} className={`permission-row ${video.hasAccess ? 'active' : ''}`}>
+                    <div className="permission-video-info">
+                      <div className="permission-thumbnail">
+                        <img src={video.thumbnail} alt="" />
                       </div>
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs font-bold text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded">C{String(video.classNumber).padStart(2, '0')}</span>
-                          <h4 className="font-semibold text-primary text-sm">{video.title}</h4>
-                        </div>
-                        <p className="text-xs text-muted flex items-center gap-2">
-                          <span className={`inline-block w-1.5 h-1.5 rounded-full ${video.status === 'published' ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
-                          {video.status.toUpperCase()}
-                        </p>
+                      <div className="permission-copy">
+                        <div><span>C{String(video.classNumber).padStart(2, '0')}</span><h3>{video.title}</h3></div>
+                        <p><span className={video.status === 'published' ? 'published-dot' : 'draft-dot'} /> {video.status.toUpperCase()}</p>
                       </div>
                     </div>
-                    
                     <button
                       onClick={() => toggleVideoAccess(video._id, video.hasAccess)}
                       disabled={accessLoading}
-                      className={`relative w-12 h-6 rounded-full transition-colors duration-300 focus:outline-none ${video.hasAccess ? 'bg-blue-500' : 'bg-gray-600'}`}
+                      className={`permission-toggle ${video.hasAccess ? 'active' : ''}`}
+                      aria-label={`${video.hasAccess ? 'Revoke' : 'Grant'} access to ${video.title}`}
                     >
-                      <span className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 shadow-md ${video.hasAccess ? 'translate-x-6' : 'translate-x-0'}`} />
+                      <span />
                     </button>
                   </div>
                 ))
@@ -184,7 +161,6 @@ const UserDetails = () => {
             </div>
           </div>
         </div>
-      </div>
     </div>
   );
 };

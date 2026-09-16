@@ -124,52 +124,52 @@ const NewsManagement = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="admin-news-page">
       <Toaster position="top-right" />
       {isFormOpen && <NewsForm article={editingArticle} onClose={(refresh) => { setIsFormOpen(false); setEditingArticle(null); if (refresh) fetchNews(); }} />}
 
-      <div className="flex justify-between items-center">
+      <div className="admin-news-heading">
         <div>
-          <h1 className="text-2xl font-bold text-primary">News & Updates</h1>
-          <p className="text-secondary text-sm">Manage platform announcements.</p>
+          <p className="dashboard-kicker">EDITORIAL DESK</p>
+          <h1>News &amp; Updates</h1>
+          <p>Publish announcements, course updates, and market information for your learners.</p>
         </div>
-        <button onClick={() => { setEditingArticle(null); setIsFormOpen(true); }} className="btn-primary">
-          <Plus size={18} /> Create News
-        </button>
+        <div className="admin-news-heading-actions">
+          <div className="admin-news-summary"><strong>{newsList.length}</strong><span>total articles</span></div>
+          <button onClick={() => { setEditingArticle(null); setIsFormOpen(true); }} className="btn-primary">
+            <Plus size={18} /> Create news
+          </button>
+        </div>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="admin-news-grid">
         {loading ? <LoadingSpinner fullScreen={false} /> : newsList.map(article => (
-          <div key={article._id} className="card overflow-hidden flex flex-col group relative">
+          <article key={article._id} className="admin-news-card">
             
-            <div className="absolute top-2 right-2 flex gap-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button onClick={() => { setEditingArticle(article); setIsFormOpen(true); }} className="p-2 bg-white/90 dark:bg-black/80 rounded hover:bg-blue-500 hover:text-white transition-colors shadow"><Edit size={16}/></button>
-              <button onClick={() => handleDelete(article._id)} className="p-2 bg-white/90 dark:bg-black/80 rounded hover:bg-red-500 hover:text-white text-red-500 transition-colors shadow"><Trash2 size={16}/></button>
-            </div>
-
-            <div className="h-40 overflow-hidden relative">
-              <img src={article.image || `https://source.unsplash.com/random/400x200?sig=${article._id}`} alt="" className="w-full h-full object-cover" onError={e => e.target.src='https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=400'}/>
-              <div className="absolute top-2 left-2 px-2 py-1 bg-black/60 backdrop-blur text-white text-xs rounded shadow font-semibold">
-                {article.category}
+            <div className="admin-news-media">
+              <img src={article.image || `https://source.unsplash.com/random/400x200?sig=${article._id}`} alt="" onError={e => e.target.src='https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=400'}/>
+              <span>{article.category}</span>
+              <div className="admin-news-card-actions">
+                <button onClick={() => { setEditingArticle(article); setIsFormOpen(true); }} className="admin-news-action admin-news-edit" title="Edit article"><Edit size={15}/></button>
+                <button onClick={() => handleDelete(article._id)} className="admin-news-action admin-news-delete" title="Delete article"><Trash2 size={15}/></button>
               </div>
             </div>
-            
-            <div className="p-5 flex-1 flex flex-col">
-              <h3 className="font-bold text-primary line-clamp-2 mb-2">{article.title}</h3>
-              <p className="text-sm text-secondary line-clamp-3 mb-4 flex-1">{article.excerpt || article.content.substring(0, 100)}</p>
+            <div className="admin-news-card-body">
+              <h2>{article.title}</h2>
+              <p>{article.excerpt || article.content.substring(0, 100)}</p>
               
-              <div className="flex items-center justify-between pt-4 border-t border-theme mt-auto">
-                <span className="text-xs text-muted">{new Date(article.createdAt).toLocaleDateString()}</span>
+              <div className="admin-news-card-footer">
+                <span>{new Date(article.createdAt).toLocaleDateString()}</span>
                 <button 
                   onClick={() => toggleStatus(article)} 
-                  className={`flex items-center gap-1 text-xs px-2 py-1 rounded font-semibold transition-colors ${article.published ? 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20' : 'bg-amber-500/10 text-amber-500 hover:bg-amber-500/20'}`}
+                  className={`admin-news-status ${article.published ? 'published' : 'draft'}`}
                 >
                   {article.published ? <Globe size={14} /> : <EyeOff size={14} />}
                   {article.published ? 'Published' : 'Draft'}
                 </button>
               </div>
             </div>
-          </div>
+          </article>
         ))}
       </div>
     </div>

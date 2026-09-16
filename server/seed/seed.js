@@ -17,7 +17,7 @@ const seedData = async () => {
     // Clear existing data (optional)
     console.log('🌱 Seeding database...');
 
-    // Create admin if doesn't exist
+    // Create or reset the development admin account
     const existingAdmin = await User.findOne({ email: 'admin@tradenex.com' });
     if (!existingAdmin) {
       await User.create({
@@ -31,7 +31,14 @@ const seedData = async () => {
       });
       console.log('✅ Admin user created: admin@tradenex.com / Admin@123');
     } else {
-      console.log('ℹ️  Admin user already exists');
+      existingAdmin.name = 'TradNex Admin';
+      existingAdmin.nic = 'ADMIN001';
+      existingAdmin.phone = '+1234567890';
+      existingAdmin.password = 'Admin@123';
+      existingAdmin.role = 'admin';
+      existingAdmin.status = 'approved';
+      await existingAdmin.save();
+      console.log('✅ Admin user reset: admin@tradenex.com / Admin@123');
     }
 
     // Seed sample news
