@@ -21,6 +21,7 @@ app.use('/api/videos', require('./routes/videoRoutes'));
 app.use('/api/video-access', require('./routes/videoAccessRoutes'));
 app.use('/api/news', require('./routes/newsRoutes'));
 app.use('/api/contact', require('./routes/contactRoutes'));
+app.use('/api/reviews', require('./routes/reviewRoutes'));
 
 // Health check and root status
 app.get('/', (req, res) => {
@@ -35,7 +36,8 @@ app.get('/', (req, res) => {
       videos: '/api/videos',
       videoAccess: '/api/video-access',
       news: '/api/news',
-      contact: '/api/contact'
+      contact: '/api/contact',
+      reviews: '/api/reviews'
     }
   });
 });

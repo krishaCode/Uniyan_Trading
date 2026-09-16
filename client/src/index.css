@@ -4560,6 +4560,258 @@ a {
   background: linear-gradient(90deg, #1D4ED8, #2563EB 50%, #1D4ED8);
 }
 
+/* ── Homepage Reviews ────────────────────────────────────────── */
+.home-reviews {
+  padding: 5.5rem 0;
+  border-top: 1px solid var(--border-color);
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.06), transparent 22rem), var(--bg-primary);
+}
+
+.home-reviews-inner {
+  width: min(100% - 2rem, 1180px);
+}
+
+.home-reviews-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.home-reviews-heading h2 {
+  max-width: 38rem;
+  color: var(--text-primary);
+  font-size: clamp(2rem, 4vw, 3.3rem);
+  line-height: 1.05;
+  letter-spacing: -0.055em;
+}
+
+.home-reviews-heading > div:first-child > p:last-child {
+  max-width: 38rem;
+  margin-top: 0.7rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.home-rating-summary {
+  display: grid;
+  flex: 0 0 auto;
+  justify-items: end;
+  gap: 0.35rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.85rem;
+  background: var(--bg-card);
+}
+
+.home-rating-summary strong {
+  color: var(--text-primary);
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.home-stars,
+.home-review-stars,
+.home-rating-input {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  color: #FBBF24;
+}
+
+.home-rating-summary span {
+  color: var(--text-muted);
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.home-reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.home-review-card,
+.home-review-empty {
+  min-height: 13rem;
+  padding: 1.35rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.9rem;
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
+}
+
+.home-review-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-review-card > p {
+  flex: 1;
+  margin-top: 1rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.home-review-card footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.home-review-card footer span {
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.home-review-card footer small {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+}
+
+.home-review-empty {
+  grid-column: 1 / -1;
+  display: grid;
+  min-height: 8rem;
+  place-items: center;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.home-review-form-shell {
+  margin-top: 1rem;
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  border-radius: 0.9rem;
+  background: linear-gradient(110deg, rgba(37, 99, 235, 0.12), rgba(16, 185, 129, 0.06));
+}
+
+.home-review-form,
+.home-review-login-prompt {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.8fr) minmax(0, 1.2fr);
+  gap: 2rem;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+.home-review-form h3,
+.home-review-login-prompt h3 {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  letter-spacing: -0.025em;
+}
+
+.home-review-form > div:first-child > p:last-child,
+.home-review-login-prompt p {
+  margin-top: 0.4rem;
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.home-review-controls {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.home-rating-input button {
+  padding: 0.1rem;
+  color: #64748B;
+}
+
+.home-rating-input button:hover,
+.home-rating-input button:has(~ button:hover) {
+  color: #FBBF24;
+}
+
+.home-review-controls textarea {
+  width: 100%;
+  min-height: 5rem;
+  padding: 0.75rem;
+  resize: vertical;
+  border: 1px solid var(--border-color);
+  border-radius: 0.65rem;
+  outline: none;
+  background: var(--bg-glass);
+  color: var(--text-primary);
+  font-size: 0.8rem;
+}
+
+.home-review-controls textarea:focus {
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.home-review-controls .btn-primary,
+.home-review-login-prompt .btn-secondary {
+  justify-self: start;
+  min-height: 2.75rem;
+  padding-inline: 1rem;
+  font-size: 0.78rem;
+}
+
+.home-review-login-prompt {
+  grid-template-columns: 1fr auto;
+}
+
+.light .home-review-card,
+.light .home-review-empty,
+.light .home-rating-summary {
+  background: #FFFFFF;
+  border-color: rgba(15, 23, 42, 0.1);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.light .home-review-controls textarea {
+  background: #FFFFFF;
+  border-color: rgba(15, 23, 42, 0.14);
+}
+
+@media (max-width: 800px) {
+  .home-reviews-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .home-rating-summary {
+    justify-items: start;
+  }
+
+  .home-reviews-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-review-form,
+  .home-review-login-prompt {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .home-reviews {
+    padding: 4rem 0;
+  }
+
+  .home-reviews-inner {
+    width: min(100% - 1.5rem, 1180px);
+  }
+
+  .home-review-login-prompt .btn-secondary,
+  .home-review-controls .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 .home-ticker .ticker-content {
   gap: 2.5rem;
   font-size: 0.72rem;

@@ -1,10 +1,52 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { PlayCircle, TrendingUp, BookOpen, Shield, ChevronRight, ArrowRight } from 'lucide-react';
+import { PlayCircle, TrendingUp, BookOpen, Shield, ChevronRight, ArrowRight, Star, Send, Loader } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useEffect, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
+import { getReviews, submitReview } from '../../services/reviewService';
 
 const Home = () => {
   const { user } = useAuth();
+  const { isApproved } = useAuth();
+  const [reviews, setReviews] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
+  const [reviewTotal, setReviewTotal] = useState(0);
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState('');
+  const [reviewLoading, setReviewLoading] = useState(false);
+
+  const loadReviews = async () => {
+    try {
+      const { data } = await getReviews();
+      setReviews(data.reviews);
+      setAverageRating(data.average);
+      setReviewTotal(data.total);
+    } catch (error) {
+      console.error('Failed to load reviews', error);
+    }
+  };
+
+  useEffect(() => { loadReviews(); }, []);
+
+  const handleReviewSubmit = async (event) => {
+    event.preventDefault();
+    if (comment.trim().length < 10) {
+      toast.error('Please write at least 10 characters.');
+      return;
+    }
+    setReviewLoading(true);
+    try {
+      await submitReview({ rating, comment: comment.trim() });
+      setComment('');
+      toast.success('Thank you for sharing your experience.');
+      loadReviews();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Could not submit your review.');
+    } finally {
+      setReviewLoading(false);
+    }
+  };
 
   const features = [
     {
@@ -31,6 +73,7 @@ const Home = () => {
 
   return (
     <div className="w-full">
+      <Toaster position="top-center" />
       {/* Hero Section */}
       <section className="home-hero relative min-h-[90vh] flex items-center justify-center overflow-hidden hero-gradient">
         {/* Animated Background Elements */}
@@ -121,6 +164,50 @@ const Home = () => {
               </div>
             </motion.div>
           </motion.div>
+        </div>
+      </section>
+
+      <section className="home-reviews">
+        <div className="home-reviews-inner container">
+          <div className="home-reviews-heading">
+            <div>
+              <p className="home-section-kicker">FROM THE COMMUNITY</p>
+              <h2>Real progress from serious learners.</h2>
+              <p>See how other traders are using TradNex to build a more consistent learning practice.</p>
+            </div>
+            <div className="home-rating-summary">
+              <strong>{averageRating ? averageRating.toFixed(1) : '0.0'}</strong>
+              <div className="home-stars">{[1, 2, 3, 4, 5].map(star => <Star key={star} size={15} fill={star <= Math.round(averageRating) ? 'currentColor' : 'none'} />)}</div>
+              <span>{reviewTotal} learner reviews</span>
+            </div>
+          </div>
+
+          <div className="home-reviews-grid">
+            {reviews.length ? reviews.slice(0, 3).map(review => (
+              <article className="home-review-card" key={review._id}>
+                <div className="home-review-stars">{[1, 2, 3, 4, 5].map(star => <Star key={star} size={15} fill={star <= review.rating ? 'currentColor' : 'none'} />)}</div>
+                <p>&ldquo;{review.comment}&rdquo;</p>
+                <footer><span>{review.user?.name || 'TradNex learner'}</span><small>{new Date(review.createdAt).toLocaleDateString()}</small></footer>
+              </article>
+            )) : (
+              <div className="home-review-empty">Be the first learner to share a review.</div>
+            )}
+          </div>
+
+          <div className="home-review-form-shell">
+            {user && isApproved ? (
+              <form className="home-review-form" onSubmit={handleReviewSubmit}>
+                <div><p className="home-section-kicker">SHARE YOUR EXPERIENCE</p><h3>How is your learning going?</h3><p>Your review helps other learners choose a focused path.</p></div>
+                <div className="home-review-controls">
+                  <div className="home-rating-input" aria-label="Choose a rating">{[1, 2, 3, 4, 5].map(star => <button type="button" key={star} onClick={() => setRating(star)} aria-label={`${star} stars`}><Star size={24} fill={star <= rating ? 'currentColor' : 'none'} /></button>)}</div>
+                  <textarea value={comment} onChange={event => setComment(event.target.value)} placeholder="Tell us what has helped you most..." maxLength={500} rows={3} />
+                  <button className="btn-primary" type="submit" disabled={reviewLoading}>{reviewLoading ? <Loader className="animate-spin" size={18} /> : <><Send size={17} /> Send review</>}</button>
+                </div>
+              </form>
+            ) : (
+              <div className="home-review-login-prompt"><div><h3>Have a learning experience to share?</h3><p>Sign in with an approved account to rate the platform and leave a comment.</p></div><Link className="btn-secondary" to={user ? '/contact' : '/login'}>{user ? 'Contact support' : 'Sign in to review'}</Link></div>
+            )}
+          </div>
         </div>
       </section>
 
