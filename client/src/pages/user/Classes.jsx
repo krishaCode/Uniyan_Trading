@@ -18,12 +18,12 @@ const Classes = () => {
       try {
         // Get ALL published videos (or all if admin)
         const allVideosRes = await getVideos({ limit: 100 });
-        setVideos(allVideosRes.data.videos);
+        setVideos(Array.isArray(allVideosRes.data.videos) ? allVideosRes.data.videos : []);
 
         // If user is approved, fetch which ones they have access to
         if (user && isApproved) {
           const myVideosRes = await getMyVideos();
-          const accessSet = new Set(myVideosRes.data.videos.map(v => v._id));
+          const accessSet = new Set((Array.isArray(myVideosRes.data.videos) ? myVideosRes.data.videos : []).map(v => v._id));
           setMyAccessIds(accessSet);
         }
       } catch (error) {

@@ -12,7 +12,7 @@ const News = () => {
     const fetchNews = async () => {
       try {
         const { data } = await getNews({ limit: 50 });
-        setNews(data.news);
+          setNews(Array.isArray(data.news) ? data.news : []);
       } catch (error) {
         console.error('Failed to fetch news', error);
       } finally {
