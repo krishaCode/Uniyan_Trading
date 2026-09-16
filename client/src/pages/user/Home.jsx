@@ -19,9 +19,9 @@ const Home = () => {
   const loadReviews = async () => {
     try {
       const { data } = await getReviews();
-      setReviews(data.reviews);
-      setAverageRating(data.average);
-      setReviewTotal(data.total);
+      setReviews(Array.isArray(data.reviews) ? data.reviews : []);
+      setAverageRating(typeof data.average === 'number' ? data.average : 0);
+      setReviewTotal(typeof data.total === 'number' ? data.total : 0);
     } catch (error) {
       console.error('Failed to load reviews', error);
     }
