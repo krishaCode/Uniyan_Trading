@@ -75,7 +75,7 @@ const Home = () => {
     <div className="w-full">
       <Toaster position="top-center" />
       {/* Hero Section */}
-      <section className="home-hero relative min-h-[90vh] flex items-center justify-center overflow-hidden hero-gradient">
+      <section className="home-hero relative min-h-screen flex items-center justify-center overflow-hidden hero-gradient" style={{ marginTop: '-80px', paddingTop: '80px' }}>
         {/* Animated Background Elements */}
         <div className="absolute inset-0 z-0 opacity-30">
           <div className="absolute top-[20%] left-[10%] w-72 h-72 bg-blue-600/20 rounded-full blur-[80px] animate-pulse-glow"></div>

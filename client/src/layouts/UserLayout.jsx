@@ -6,7 +6,7 @@ const UserLayout = () => {
   return (
     <div className="min-h-screen flex flex-col bg-primary text-primary transition-colors duration-300">
       <Navbar />
-      <main className="flex-grow pt-20 overflow-hidden">
+      <main className="flex-grow" style={{ paddingTop: '80px' }}>
         <Outlet />
       </main>
       <Footer />
