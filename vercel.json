@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "installCommand": "npm install --prefix server && npm install --prefix client",
-  "buildCommand": "npm run build --prefix client",
+  "installCommand": "npm install --prefix server",
+  "buildCommand": "echo Using prebuilt client bundle",
   "outputDirectory": "client/dist",
   "functions": {
     "api/index.js": {

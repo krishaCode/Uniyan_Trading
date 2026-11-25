@@ -3,7 +3,7 @@ import { getVideos, getMyVideos } from '../../services/videoService';
 import { useAuth } from '../../context/AuthContext';
 import VideoCard from '../../components/common/VideoCard';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import { PlayCircle, AlertCircle } from 'lucide-react';
+import { PlayCircle, AlertCircle, ArrowRight, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Classes = () => {
@@ -39,25 +39,27 @@ const Classes = () => {
   if (loading) return <LoadingSpinner fullScreen />;
 
   return (
-    <div className="container mx-auto px-4 py-12 min-h-screen">
-      
-      {/* Header */}
-      <div className="mb-12">
-        <h1 className="text-4xl font-bold text-primary mb-4 flex items-center gap-3">
-          <PlayCircle className="text-blue-500" size={36} /> 
-          Trading Classes
-        </h1>
-        <p className="text-lg text-secondary max-w-3xl">
-          Browse our collection of professional trading masterclasses. Videos marked with a lock require administrator approval for access.
-        </p>
-      </div>
+    <div className="classes-page container min-h-screen">
+      <header className="classes-masthead">
+        <div>
+          <p className="classes-kicker"><BookOpen size={15} /> LEARNING LIBRARY</p>
+          <h1>Trading Classes</h1>
+          <p className="classes-lede">
+            Build your market knowledge with structured masterclasses, from technical foundations to practical strategy.
+          </p>
+        </div>
+        <div className="classes-summary">
+          <strong>{videos.length}</strong>
+          <span>{videos.length === 1 ? 'class available' : 'classes available'}</span>
+        </div>
+      </header>
 
       {/* Pending Account Warning */}
       {user && !isApproved && !isAdmin && (
-        <div className="mb-8 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-4">
+        <div className="classes-notice classes-notice-warning">
           <AlertCircle className="text-amber-500 shrink-0 mt-0.5" size={24} />
           <div>
-            <h3 className="text-lg font-bold text-amber-500 mb-1">Account Pending Approval</h3>
+            <h2>Account Pending Approval</h2>
             <p className="text-secondary text-sm">
               Your account is currently waiting for administrator approval. You will not be able to watch protected videos until your account is fully verified.
             </p>
@@ -67,29 +69,38 @@ const Classes = () => {
 
       {/* Guest Warning */}
       {!user && (
-        <div className="mb-8 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-between flex-wrap gap-4">
+        <div className="classes-notice classes-notice-info">
           <div className="flex items-center gap-4">
             <AlertCircle className="text-blue-500 shrink-0" size={24} />
-            <p className="text-secondary text-sm font-medium">
-              You must be logged in and approved to watch classes.
-            </p>
+            <div>
+              <h2>Unlock the full library</h2>
+              <p className="text-secondary text-sm">Log in with an approved account to watch protected classes.</p>
+            </div>
           </div>
-          <div className="flex gap-3">
-            <Link to="/login" className="btn-secondary !py-2 !px-4 !text-sm">Login</Link>
-            <Link to="/signup" className="btn-primary !py-2 !px-4 !text-sm">Sign Up</Link>
+          <div className="classes-notice-actions">
+            <Link to="/login" className="btn-secondary !py-2 !px-4 !text-sm">Login <ArrowRight size={15} /></Link>
+            <Link to="/signup" className="btn-primary !py-2 !px-4 !text-sm">Create account <ArrowRight size={15} /></Link>
           </div>
         </div>
       )}
 
-      {/* Video Grid */}
+      <section className="classes-library" aria-labelledby="available-classes-heading">
+        <div className="classes-section-heading">
+          <div>
+            <p className="classes-section-kicker">START LEARNING</p>
+            <h2 id="available-classes-heading">Available classes</h2>
+          </div>
+          <span>New lessons are added regularly</span>
+        </div>
+
       {videos.length === 0 ? (
-        <div className="text-center py-20 glass-card">
+        <div className="classes-empty-state">
           <PlayCircle className="mx-auto text-muted mb-4 opacity-50" size={64} />
-          <h3 className="text-xl font-bold text-secondary">No classes available yet.</h3>
+          <h3>No classes available yet.</h3>
           <p className="text-muted mt-2">Check back later for new content.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+        <div className="classes-grid">
           {videos.map((video, index) => {
             const hasAccess = isAdmin || myAccessIds.has(video._id);
             return (
@@ -103,6 +114,7 @@ const Classes = () => {
           })}
         </div>
       )}
+      </section>
     </div>
   );
 };

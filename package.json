@@ -1,6 +1,9 @@
 {
   "name": "tradenex-platform",
   "version": "1.0.0",
+  "engines": {
+    "node": "22.x"
+  },
   "description": "TradNex - Professional Trading Course Management Platform",
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
