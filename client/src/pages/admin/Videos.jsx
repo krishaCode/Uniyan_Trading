@@ -48,11 +48,13 @@ const Videos = () => {
     if (shouldRefresh) fetchVideos();
   };
 
+  if (isFormOpen) {
+    return <VideoForm video={editingVideo} onClose={handleCloseForm} />;
+  }
+
   return (
     <div className="admin-videos-page">
       <Toaster position="top-right" />
-      
-      {isFormOpen && <VideoForm video={editingVideo} onClose={handleCloseForm} />}
 
       <div className="videos-page-heading">
         <div>

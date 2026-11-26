@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { createVideo, updateVideo } from '../../services/videoService';
-import Modal from '../../components/common/Modal';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import {
+  ArrowLeft,
+  BadgeCheck,
   CalendarDays,
   Check,
   CirclePlay,
@@ -66,31 +67,41 @@ const VideoForm = ({ video, onClose }) => {
   };
 
   return (
-    <Modal isOpen={true} onClose={() => onClose(false)} title={isEditing ? 'Edit Video / Class' : 'Add New Video'} maxWidth="max-w-5xl">
-      <form onSubmit={handleSubmit(onSubmit)} className="video-studio-form">
-        <div className="video-studio-intro">
-          <div className="video-studio-icon"><Sparkles size={18} /></div>
-          <div>
-            <p className="video-studio-eyebrow">{isEditing ? 'UPDATE YOUR LIBRARY' : 'CONTENT STUDIO'}</p>
-            <p className="video-studio-subtitle">
-              {isEditing ? 'Refresh the details learners see in your library.' : 'Add a polished lesson to your learning library.'}
-            </p>
+    <div className="video-editor-page">
+      <Toaster position="top-right" />
+      <header className="video-editor-header">
+        <button type="button" className="video-editor-back" onClick={() => onClose(false)}>
+          <ArrowLeft size={17} />
+          <span>Back to video library</span>
+        </button>
+        <div className="video-editor-heading-row">
+          <div className="video-editor-heading">
+            <p className="video-editor-breadcrumb">CONTENT LIBRARY <span>/</span> {isEditing ? 'EDIT CLASS' : 'NEW CLASS'}</p>
+            <h1>{isEditing ? 'Edit video class' : 'Create a new class'}</h1>
+            <p>{isEditing ? 'Update your lesson details and publishing settings.' : 'Build a clear, engaging lesson for your students.'}</p>
+          </div>
+          <div className="video-editor-step">
+            <span><Sparkles size={15} /></span>
+            <div><strong>CLASS SETUP</strong><small>Details &amp; publishing</small></div>
           </div>
         </div>
+      </header>
 
-        <div className="video-studio-layout">
-          <div className="video-studio-fields">
-            <section className="video-studio-section">
-              <div className="video-studio-section-heading">
-                <span className="video-studio-section-icon"><Film size={16} /></span>
+      <form onSubmit={handleSubmit(onSubmit)} className="video-editor-form">
+        <div className="video-editor-layout">
+          <div className="video-editor-main">
+            <section className="video-editor-card">
+              <div className="video-editor-card-heading">
+                <span className="video-editor-card-icon"><Film size={17} /></span>
                 <div>
-                  <h4>Lesson details</h4>
-                  <p>Give this class a clear title and place in the course.</p>
+                  <h2>Lesson information</h2>
+                  <p>Start with the essentials learners need to find your class.</p>
                 </div>
+                <span className="video-editor-section-number">01</span>
               </div>
 
-              <div className="video-studio-two-fields">
-                <div className="video-studio-class-number">
+              <div className="video-editor-title-row">
+                <div className="video-editor-class-number">
                   <label htmlFor="video-class-number">Class number <span>*</span></label>
                   <input
                     id="video-class-number"
@@ -98,28 +109,28 @@ const VideoForm = ({ video, onClose }) => {
                     min="1"
                     placeholder="01"
                     aria-invalid={!!errors.classNumber}
-                    className={`input-field ${errors.classNumber ? 'video-studio-input-error' : ''}`}
+                    className={`input-field ${errors.classNumber ? 'video-editor-input-error' : ''}`}
                     {...register('classNumber', { required: 'Class number is required', valueAsNumber: true, min: 1 })}
                   />
-                  {errors.classNumber && <small className="video-studio-error">{errors.classNumber.message || 'Enter a valid class number'}</small>}
+                  {errors.classNumber && <small className="video-editor-error">{errors.classNumber.message || 'Enter a valid class number'}</small>}
                 </div>
-                <div>
+                <div className="video-editor-title">
                   <label htmlFor="video-title">Video title <span>*</span></label>
                   <input
                     id="video-title"
                     type="text"
                     placeholder="e.g. Reading market structure"
                     aria-invalid={!!errors.title}
-                    className={`input-field ${errors.title ? 'video-studio-input-error' : ''}`}
+                    className={`input-field ${errors.title ? 'video-editor-input-error' : ''}`}
                     {...register('title', { required: 'A video title is required' })}
                   />
-                  {errors.title && <small className="video-studio-error">{errors.title.message}</small>}
+                  {errors.title && <small className="video-editor-error">{errors.title.message}</small>}
                 </div>
               </div>
 
-              <div className="video-studio-field">
-                <label htmlFor="video-youtube-url">YouTube link <span>*</span></label>
-                <div className={`video-studio-url-wrap ${errors.youtubeUrl ? 'has-error' : ''}`}>
+              <div className="video-editor-field">
+                <label htmlFor="video-youtube-url">YouTube video link <span>*</span></label>
+                <div className={`video-editor-url ${errors.youtubeUrl ? 'has-error' : ''}`}>
                   <Link2 size={17} />
                   <input
                     id="video-youtube-url"
@@ -128,41 +139,42 @@ const VideoForm = ({ video, onClose }) => {
                     aria-invalid={!!errors.youtubeUrl}
                     {...register('youtubeUrl', { required: 'A YouTube link is required' })}
                   />
-                  {previewId && <Check size={16} className="video-studio-url-valid" />}
+                  {previewId && <Check size={16} className="video-editor-valid" />}
                 </div>
-                {errors.youtubeUrl && <small className="video-studio-error">{errors.youtubeUrl.message}</small>}
-                <small className="video-studio-hint">Paste a YouTube video or youtu.be link to generate a preview.</small>
+                {errors.youtubeUrl && <small className="video-editor-error">{errors.youtubeUrl.message}</small>}
+                <small className="video-editor-hint">A preview will appear on the right when the link is recognized.</small>
               </div>
 
-              <div className="video-studio-field">
-                <label htmlFor="video-description">Description <span className="optional-label">Optional</span></label>
+              <div className="video-editor-field">
+                <label htmlFor="video-description">Class description <span className="video-editor-optional">OPTIONAL</span></label>
                 <textarea
                   id="video-description"
-                  rows="3"
-                  placeholder="What will learners take away from this class?"
+                  rows="4"
+                  placeholder="Outline the key concepts covered in this class..."
                   className="input-field resize-none"
                   {...register('description')}
                 />
               </div>
             </section>
 
-            <section className="video-studio-section video-studio-schedule">
-              <div className="video-studio-section-heading">
-                <span className="video-studio-section-icon"><CalendarDays size={16} /></span>
+            <section className="video-editor-card">
+              <div className="video-editor-card-heading">
+                <span className="video-editor-card-icon"><CalendarDays size={17} /></span>
                 <div>
-                  <h4>Schedule &amp; visibility</h4>
-                  <p>Set the class timing and choose who can see it.</p>
+                  <h2>Schedule &amp; instructor</h2>
+                  <p>Choose when this class takes place and who leads it.</p>
                 </div>
+                <span className="video-editor-section-number">02</span>
               </div>
 
-              <div className="video-studio-meta-grid">
+              <div className="video-editor-schedule-grid">
                 <div>
                   <label htmlFor="video-date">Class date</label>
                   <input id="video-date" type="date" className="input-field" {...register('classDate')} />
                 </div>
                 <div>
                   <label htmlFor="video-start-time">Start time</label>
-                  <div className="video-studio-input-icon">
+                  <div className="video-editor-icon-input">
                     <Clock3 size={15} />
                     <input id="video-start-time" type="text" placeholder="7:00 PM" {...register('startTime')} />
                   </div>
@@ -172,69 +184,86 @@ const VideoForm = ({ video, onClose }) => {
                   <input id="video-duration" type="text" placeholder="1h 30m" className="input-field" {...register('duration')} />
                 </div>
                 <div>
-                  <label htmlFor="video-status">Status</label>
-                  <select id="video-status" className="input-field" {...register('status')}>
-                    <option value="published">Published</option>
-                    <option value="draft">Draft</option>
-                    <option value="unpublished">Unpublished</option>
-                  </select>
+                  <label htmlFor="video-instructor">Instructor</label>
+                  <input id="video-instructor" type="text" placeholder="Instructor name" className="input-field" {...register('instructor')} />
                 </div>
               </div>
+            </section>
 
-              <div className="video-studio-field">
-                <label htmlFor="video-instructor">Instructor</label>
-                <input id="video-instructor" type="text" placeholder="Instructor name" className="input-field" {...register('instructor')} />
+            <section className="video-editor-card video-editor-publishing">
+              <div className="video-editor-card-heading">
+                <span className="video-editor-card-icon"><BadgeCheck size={17} /></span>
+                <div>
+                  <h2>Publishing</h2>
+                  <p>Control the visibility of this class in your library.</p>
+                </div>
+                <span className="video-editor-section-number">03</span>
+              </div>
+              <div className="video-editor-publish-row">
+                <div>
+                  <strong>Class visibility</strong>
+                  <p>Published classes are available to learners.</p>
+                </div>
+                <select id="video-status" aria-label="Class visibility" className="input-field" {...register('status')}>
+                  <option value="published">Published</option>
+                  <option value="draft">Draft</option>
+                  <option value="unpublished">Unpublished</option>
+                </select>
               </div>
             </section>
           </div>
 
-          <aside className="video-studio-preview-panel">
-            <div className="video-studio-preview-heading">
-              <div>
-                <p className="video-studio-eyebrow">LIVE PREVIEW</p>
-                <h4>Video preview</h4>
+          <aside className="video-editor-aside">
+            <section className="video-editor-preview-card">
+              <div className="video-editor-preview-heading">
+                <div><span className="video-editor-live-dot" /> LIVE PREVIEW</div>
+                <CirclePlay size={18} />
               </div>
-              <CirclePlay size={19} />
-            </div>
-            <div className="video-studio-preview-frame">
-              {previewId ? (
-                <iframe
-                  title={videoTitle ? `${videoTitle} video preview` : 'YouTube video preview'}
-                  src={`https://www.youtube.com/embed/${previewId}`}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
-              ) : (
-                <div className="video-studio-preview-empty">
-                  <span><CirclePlay size={27} /></span>
-                  <strong>Your preview appears here</strong>
-                  <small>Add a valid YouTube link to see it.</small>
-                </div>
-              )}
-            </div>
-            <div className="video-studio-preview-copy">
-              <span className="video-studio-preview-class">
-                {classNumber ? `CLASS ${String(classNumber).padStart(2, '0')}` : 'NEW CLASS'}
-              </span>
-              <h5>{videoTitle || 'Your lesson title'}</h5>
-              <p>Preview of how this lesson is organized in your library.</p>
-            </div>
-            <div className="video-studio-preview-note">
-              <Check size={14} />
-              <span>Changes are saved to your video library.</span>
-            </div>
+              <div className="video-editor-preview-frame">
+                {previewId ? (
+                  <iframe
+                    title={videoTitle ? `${videoTitle} video preview` : 'YouTube video preview'}
+                    src={`https://www.youtube.com/embed/${previewId}`}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                ) : (
+                  <div className="video-editor-preview-empty">
+                    <span><CirclePlay size={26} /></span>
+                    <strong>Preview coming up</strong>
+                    <small>Paste a YouTube link to see your class video here.</small>
+                  </div>
+                )}
+              </div>
+              <div className="video-editor-preview-details">
+                <span>{classNumber ? `CLASS ${String(classNumber).padStart(2, '0')}` : 'NEW CLASS'}</span>
+                <h3>{videoTitle || 'Your lesson title'}</h3>
+                <p>{watch('instructor') || 'Instructor name'}</p>
+              </div>
+            </section>
+
+            <section className="video-editor-tip">
+              <span><Sparkles size={16} /></span>
+              <div>
+                <strong>Make it easy to find</strong>
+                <p>Use a specific title and add a short description so students know what they’ll learn.</p>
+              </div>
+            </section>
           </aside>
         </div>
 
-        <div className="video-studio-actions">
-          <button type="button" onClick={() => onClose(false)} className="btn-secondary">Cancel</button>
-          <button type="submit" disabled={loading} className="btn-primary video-studio-submit">
-            {loading ? <Loader className="animate-spin" size={17} /> : <Film size={16} />}
-            {loading ? 'Saving...' : isEditing ? 'Save changes' : 'Publish video'}
-          </button>
-        </div>
+        <footer className="video-editor-footer">
+          <div className="video-editor-save-note"><Check size={15} /><span>Your changes will appear in the video library.</span></div>
+          <div className="video-editor-actions">
+            <button type="button" onClick={() => onClose(false)} className="btn-secondary">Cancel</button>
+            <button type="submit" disabled={loading} className="btn-primary video-editor-submit">
+              {loading ? <Loader className="animate-spin" size={17} /> : <Film size={16} />}
+              {loading ? 'Saving...' : isEditing ? 'Save changes' : 'Publish video'}
+            </button>
+          </div>
+        </footer>
       </form>
-    </Modal>
+    </div>
   );
 };
 
