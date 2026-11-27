@@ -32,7 +32,7 @@ const getNews = async (req, res) => {
 // @access  Public
 const getNewsById = async (req, res) => {
   try {
-    const article = await News.findById(req.params.id).populate('author', 'name');
+    const article = await News.findOne({ _id: req.params.id, published: true }).populate('author', 'name');
     if (!article) return res.status(404).json({ success: false, message: 'News article not found' });
     res.status(200).json({ success: true, article });
   } catch (error) {

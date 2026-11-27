@@ -18,6 +18,7 @@ import Signup from './pages/user/Signup';
 import Classes from './pages/user/Classes';
 import ClassDetails from './pages/user/ClassDetails';
 import News from './pages/user/News';
+import NewsArticle from './pages/user/NewsArticle';
 import Contact from './pages/user/Contact';
 import Profile from './pages/user/Profile';
 
@@ -57,6 +58,7 @@ function App() {
               <Route path="classes" element={<Classes />} />
               <Route path="classes/:id" element={<ProtectedRoute><ClassDetails /></ProtectedRoute>} />
               <Route path="news" element={<News />} />
+              <Route path="news/:id" element={<NewsArticle />} />
               <Route path="contact" element={<Contact />} />
               <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             </Route>

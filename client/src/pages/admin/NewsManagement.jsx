@@ -47,7 +47,7 @@ const NewsForm = ({ article, onClose }) => {
       }
       onClose(true);
     } catch (error) {
-      toast.error('Failed to save news');
+      toast.error(error.response?.data?.message || error.message || 'Failed to save news');
     } finally {
       setLoading(false);
     }
