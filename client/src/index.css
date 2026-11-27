@@ -5169,8 +5169,16 @@ a {
 
 .classes-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  justify-content: center;
+  align-items: stretch;
+  gap: 1.5rem;
+}
+
+.classes-grid > .card {
+  width: 100%;
+  max-width: 22rem;
+  justify-self: center;
 }
 
 .classes-empty-state {
@@ -5186,12 +5194,6 @@ a {
   color: var(--text-secondary);
   font-size: 1.2rem;
   font-weight: 800;
-}
-
-@media (max-width: 900px) {
-  .classes-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 640px) {
